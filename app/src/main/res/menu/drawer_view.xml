@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_all_events"
+            android:title="@string/category_all_events"
+            android:icon="@drawable/ic_all_events_gray_24dp"
+            android:checked="true"/>
+        <item
+            android:id="@+id/nav_past_events"
+            android:title="@string/category_past_events"
+            android:icon="@drawable/ic_past_events_gray_24dp"/>
+    </group>
+
+    <group
+        android:id="@+id/menu_cetegories"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_business"
+            android:title="@string/category_business"
+            android:icon="@drawable/ic_business_gray_24dp"/>
+        <item
+            android:id="@+id/nav_education"
+            android:title="@string/category_education"
+            android:icon="@drawable/ic_education_gray_24dp"/>
+        <item
+            android:id="@+id/nav_leisure"
+            android:title="@string/category_leisure"
+            android:icon="@drawable/ic_leisure_gray_24dp"/>
+        <item
+            android:id="@+id/nav_special"
+            android:title="@string/category_special"
+            android:icon="@drawable/ic_special_gray_24dp"/>
+        <item
+            android:id="@+id/nav_sports"
+            android:title="@string/category_sports"
+            android:icon="@drawable/ic_sports_gray_24dp"/>
+    </group>
+</menu>

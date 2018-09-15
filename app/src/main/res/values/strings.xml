@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Count It Down</string>
+
+    <!-- Event categories -->
+    <string name="category_title">Category</string>
+    <string name="category_all_events">All Events</string>
+    <string name="category_past_events">Past Events</string>
+    <string name="category_business">Business</string>
+    <string name="category_education">Education</string>
+    <string name="category_leisure">Leisure</string>
+    <string name="category_special">Special</string>
+    <string name="category_sports">Sports</string>
+
+    <array name="categories">
+        <item>@string/category_business</item>
+        <item>@string/category_education</item>
+        <item>@string/category_leisure</item>
+        <item>@string/category_special</item>
+        <item>@string/category_sports</item>
+    </array>
+
+    <!-- Action menu -->
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- New Event Activity -->
+    <string name="hint_event_name">Event Name</string>
+    <string name="hint_event_date">Event Date</string>
+    <string name="hint_event_time">Event Time</string>
+</resources>
