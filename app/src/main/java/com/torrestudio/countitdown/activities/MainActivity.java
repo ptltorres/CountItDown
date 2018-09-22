@@ -129,9 +129,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.action_settings:
                 Toast.makeText(this, "No of events: " + mDataController.getAllEvents().size(), Toast.LENGTH_SHORT).show();
-                for (Event e : mDataController.getAllEvents()) {
-                    Toast.makeText(this,e.toString(), Toast.LENGTH_SHORT);
-                }
                 break;
         }
         return super.onOptionsItemSelected(item);

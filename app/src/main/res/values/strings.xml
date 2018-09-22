@@ -11,6 +11,10 @@
     <string name="category_special">Special</string>
     <string name="category_sports">Sports</string>
 
+    <!-- Event Cardview Text -->
+    <string name="event_days_remaining_text">days and</string>
+    <string name="event_hours_remaining_text">hours away</string>
+
     <array name="categories">
         <item>@string/category_business</item>
         <item>@string/category_education</item>

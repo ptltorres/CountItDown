@@ -18,7 +18,7 @@ public class EventDataController {
     // List of events in the database. All instances will share all the events.
     private static ArrayList<Event> mAllEvents;
     // Subscriber to be notified when new data is added. Subscriber may be replaced;
-    private static EventDataSubscriber mSubscriber;
+    private static ArrayList<EventDataSubscriber> mSubscribers;
 
     public static EventDataController initController(Context context) {
         return new EventDataController(context);
@@ -30,6 +30,9 @@ public class EventDataController {
 
         if (mAllEvents == null)
             mAllEvents = getAllEventsFromDb();
+
+        if (mSubscribers == null)
+            mSubscribers = new ArrayList<>();
     }
 
     private ArrayList<Event> getAllEventsFromDb() {
@@ -50,8 +53,8 @@ public class EventDataController {
         mDbController.insertEventRecord(e);
         mAllEvents.add(e);
 
-        if (mSubscriber !=null)
-            mSubscriber.onEventCreated(e);
+        for (EventDataSubscriber sub : mSubscribers)
+            sub.onEventCreated(e);
     }
 
     public ArrayList<Event> getAllEvents() {
@@ -59,6 +62,6 @@ public class EventDataController {
     }
 
     public static void subscribe(EventDataSubscriber subscriber) {
-        mSubscriber = subscriber;
+        mSubscribers.add(subscriber);
     }
 }

@@ -1,13 +1,17 @@
 package com.torrestudio.countitdown.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,11 +28,13 @@ import com.squareup.picasso.Picasso;
 import com.torrestudio.countitdown.R;
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.EventDataController;
+import com.torrestudio.countitdown.controllers.ImageStorageController;
 import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.fragments.DatePickerFragment;
 import com.torrestudio.countitdown.fragments.TimePickerFragment;
 import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -36,6 +42,8 @@ import java.util.Locale;
 public class CreateEventActivity extends AppCompatActivity
         implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener,
                     TimePickerFragment.OnTimeSelectedListener, EventDataSubscriber {
+
+    private static final String TAG = "CreateEventActivity";
 
     // Member views of this Activity
     private Toolbar mActivityToolbar;
@@ -177,8 +185,9 @@ public class CreateEventActivity extends AppCompatActivity
     private void createEventRecord() {
         if (validateInputFields()) {
             EventDataController eventController = EventDataController.initController(this);
-            eventController.createEvent(getEventInstance());
-            Toast.makeText(this, "Event Created", Toast.LENGTH_LONG).show();
+            Event newEvent = getEventInstance();
+            eventController.createEvent(newEvent);
+            storeEventImage(newEvent);
             finish();
         } else {
             Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show();
@@ -201,7 +210,22 @@ public class CreateEventActivity extends AppCompatActivity
     }
 
     private Event getEventInstance() {
-        return new Event(mEventPhotoUri.toString(), mEventName, mEventDateTimeInMillis, mEventCategory);
+        return new Event(mEventPhotoUri.toString() + Constant.IMG_FILE_EXTENSION,
+                        mEventName, mEventDateTimeInMillis, mEventCategory);
+    }
+
+    private void storeEventImage(Event event) {
+        try {
+            Bitmap eventBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),mEventPhotoUri);
+
+            new ImageStorageController(this).
+                    setFileName(event.getPhotoUri()).
+                    setDirectoryName(Constant.DIRECTORY_NAME).
+                    save(eventBitmap);
+
+        } catch (Exception e) {
+            Log.d(TAG, "storeEventImage: " + e.getMessage());
+        }
     }
 
     @Override
