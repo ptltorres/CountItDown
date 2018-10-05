@@ -1,10 +1,13 @@
 package com.torrestudio.countitdown.entities;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private Bitmap photoBitmap;
     private String photoUri;
     private String name;
     private long dateTimeInMillis;
@@ -15,6 +18,14 @@ public class Event implements Serializable {
         this.name = name;
         this.dateTimeInMillis = dateTimeInMillis;
         this.category = category;
+    }
+
+    public Bitmap getPhotoBitmap() {
+        return photoBitmap;
+    }
+
+    public void setPhotoBitmap(Bitmap photoBitmap) {
+        this.photoBitmap = photoBitmap;
     }
 
     public String getPhotoUri() {
@@ -52,7 +63,8 @@ public class Event implements Serializable {
     @Override
     public String toString() {
         return "Event{" +
-                "photoUri='" + photoUri + '\'' +
+                "photoBitmap=" + photoBitmap +
+                ", photoUri='" + photoUri + '\'' +
                 ", name='" + name + '\'' +
                 ", dateTimeInMillis=" + dateTimeInMillis +
                 ", category='" + category + '\'' +

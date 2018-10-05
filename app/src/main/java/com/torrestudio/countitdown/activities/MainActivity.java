@@ -9,6 +9,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +22,10 @@ import com.torrestudio.countitdown.R;
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.EventDataController;
 import com.torrestudio.countitdown.entities.Event;
+import com.torrestudio.countitdown.entities.EventAdapter;
 import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EventDataSubscriber {
@@ -28,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements
     // Member views of this activity
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton addFabButton;
 
     private EventDataController mDataController;
@@ -37,27 +45,45 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initViews();
+
         mDataController = EventDataController.initController(this);
         EventDataController.subscribe(this);
+        initViews();
     }
 
     private void initViews() {
-        // Nav Drawer
+        setUpNavDrawer();
+        setUpToolbar();
+        setUpFab();
+        setUpRecyclerView();
+    }
+
+    private void setUpNavDrawer() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        // Toolbar
+    }
+
+    private void setUpToolbar() {
         mToolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(mToolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         getSupportActionBar().setTitle(getString(R.string.category_all_events));
+    }
 
-        // FAB
+    private void setUpFab() {
         addFabButton = findViewById(R.id.addFabButton);
         addFabButton.setOnClickListener(this);
+    }
+
+    private void setUpRecyclerView() {
+        mRecyclerView = findViewById(R.id.events_recyclerView);
+        mAdapter = new EventAdapter(mDataController.getAllEvents());
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -72,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEventCreated(Event e) {
-        // Refresh the future recycler view when data is added
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

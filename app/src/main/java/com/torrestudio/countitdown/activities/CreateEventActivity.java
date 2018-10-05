@@ -60,6 +60,7 @@ public class CreateEventActivity extends AppCompatActivity
     private boolean isEventTimeSet;
 
     // Event data to store
+    private Bitmap mEventPhotoBitmap;
     private Uri mEventPhotoUri;
     private String mEventName;
     private long mEventDateTimeInMillis;
@@ -108,6 +109,23 @@ public class CreateEventActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.create_event_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                createEventRecord();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_event_image_fab:
@@ -137,8 +155,18 @@ public class CreateEventActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             mEventPhotoUri = data.getData();
+            mEventPhotoBitmap = getBitmapFromUri(mEventPhotoUri);
             Picasso.get().load(mEventPhotoUri).into(mEventImage);
             isEventImageSet = true;
+        }
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) {
+        try {
+            return MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+        } catch (IOException e) {
+            Log.d(TAG, "getBitmapFromUri: " + e.getMessage());
+            return null;
         }
     }
 
@@ -165,29 +193,11 @@ public class CreateEventActivity extends AppCompatActivity
         return new SimpleDateFormat("hh:mm a");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.create_event_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_done:
-                createEventRecord();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void createEventRecord() {
         if (validateInputFields()) {
             EventDataController eventController = EventDataController.initController(this);
             Event newEvent = getEventInstance();
             eventController.createEvent(newEvent);
-            storeEventImage(newEvent);
             finish();
         } else {
             Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show();
@@ -195,7 +205,7 @@ public class CreateEventActivity extends AppCompatActivity
     }
 
     private boolean validateInputFields() {
-        getInputFieldValues();
+        setInputViewsValues();
 
         boolean isValid = !mEventName.isEmpty() && isEventImageSet
                         && isEventDateSet && isEventTimeSet;
@@ -203,33 +213,22 @@ public class CreateEventActivity extends AppCompatActivity
         return isValid;
     }
 
-    private void getInputFieldValues() {
+    private void setInputViewsValues() {
         mEventName = mEventNameEditText.getText().toString();
         mEventDateTimeInMillis = mEventDateTimeCalendar.getTimeInMillis();
         mEventCategory = mCategorySpinner.getSelectedItem().toString();
     }
 
     private Event getEventInstance() {
-        return new Event(mEventPhotoUri.toString() + Constant.IMG_FILE_EXTENSION,
-                        mEventName, mEventDateTimeInMillis, mEventCategory);
+        Event event = new Event(mEventPhotoUri.toString() + Constant.IMG_FILE_EXTENSION,
+                mEventName, mEventDateTimeInMillis, mEventCategory);
+        event.setPhotoBitmap(mEventPhotoBitmap);
+        return event;
     }
 
-    private void storeEventImage(Event event) {
-        try {
-            Bitmap eventBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),mEventPhotoUri);
-
-            new ImageStorageController(this).
-                    setFileName(event.getPhotoUri()).
-                    setDirectoryName(Constant.DIRECTORY_NAME).
-                    save(eventBitmap);
-
-        } catch (Exception e) {
-            Log.d(TAG, "storeEventImage: " + e.getMessage());
-        }
-    }
 
     @Override
     public void onEventCreated(Event e) {
-
+        // No implementation as for now. This class is not subscribed to an EventDataController
     }
 }
