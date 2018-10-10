@@ -5,4 +5,5 @@ import java.io.Serializable;
 
 public interface EventDataSubscriber {
     void onEventCreated(Event e);
+    void onEventDataLoaded();
 }

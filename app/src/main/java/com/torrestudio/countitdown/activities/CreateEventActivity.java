@@ -235,4 +235,9 @@ public class CreateEventActivity extends AppCompatActivity
     public void onEventCreated(Event e) {
         // No implementation as for now. This class is not subscribed to an EventDataController
     }
+
+    @Override
+    public void onEventDataLoaded() {
+
+    }
 }

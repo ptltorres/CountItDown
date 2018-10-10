@@ -43,10 +43,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        initViews();
         mDataController = EventDataController.initController(this);
         EventDataController.subscribe(this);
-        initViews();
     }
 
     @Override
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements
         setUpNavDrawer();
         setUpToolbar();
         setUpFab();
-        setUpRecyclerView();
     }
 
     private void setUpNavDrawer() {
@@ -105,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onEventCreated(Event e) {
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onEventDataLoaded() {
+        runOnUiThread(() -> setUpRecyclerView());
     }
 
     @Override

@@ -24,6 +24,7 @@ public class EventDataController {
     // Subscribers to be notified when new data is added.
     private static ArrayList<EventDataSubscriber> sSubscribers = new ArrayList<>();
     private static boolean isEventDataLoaded = false;
+    private static boolean sSubscribersNotified = false;
 
     public static EventDataController initController(Context context) {
         return new EventDataController(context);
@@ -32,11 +33,15 @@ public class EventDataController {
     private EventDataController(Context context) {
         mContext = context;
         mDbController = new EventDbController(mContext);
-        if (!isEventDataLoaded) loadEvents();
+        if (!isEventDataLoaded)
+            loadEventsAndNotifySubscribers();
     }
 
-    private void loadEvents() {
-        loadAllEventsFromDb();
+    private void loadEventsAndNotifySubscribers() {
+        new Thread(() -> {
+            loadAllEventsFromDb();
+            notifySubscribers();
+        }).start();
     }
 
     private void loadAllEventsFromDb() {
@@ -52,6 +57,14 @@ public class EventDataController {
         }
         sFilteredEvents.addAll(sAllEvents);
         isEventDataLoaded = true;
+    }
+
+    private void notifySubscribers() {
+        if (!sSubscribersNotified) {
+            for (EventDataSubscriber sub : sSubscribers)
+                sub.onEventDataLoaded();
+            sSubscribersNotified = true;
+        }
     }
 
     public void createEvent(Event e) {
@@ -119,5 +132,8 @@ public class EventDataController {
      */
     public static void subscribe(EventDataSubscriber subscriber) {
         sSubscribers.add(subscriber);
+        if (isEventDataLoaded) {
+            subscriber.onEventDataLoaded();
+        }
     }
 }

@@ -55,10 +55,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = mAllEvents.get(position);
 
-        File imageFile = new ImageStorageController(mContext).
-                setFileName(event.getPhotoUri()).
-                setDirectoryName(Constant.DIRECTORY_NAME).
-                getImageAsFile();
+        File imageFile = new ImageStorageController(mContext)
+                .setFileName(event.getPhotoUri())
+                .setDirectoryName(Constant.DIRECTORY_NAME)
+                .getImageAsFile();
 
         Picasso.get()
                 .load(imageFile)
