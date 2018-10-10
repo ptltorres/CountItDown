@@ -1,5 +1,6 @@
 package com.torrestudio.countitdown.entities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.torrestudio.countitdown.R;
+import com.torrestudio.countitdown.constants.Constant;
+import com.torrestudio.countitdown.controllers.ImageStorageController;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private static final String TAG = "EventAdapter";
 
+    private Context mContext;
     private ArrayList<Event> mAllEvents;
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -35,7 +39,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
-    public EventAdapter(ArrayList<Event> events) {
+    public EventAdapter(Context context, ArrayList<Event> events) {
+        mContext = context;
         mAllEvents = events;
     }
 
@@ -49,7 +54,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = mAllEvents.get(position);
-        //holder.eventImage.setImageBitmap(event.getPhotoBitmap());
+
+        File imageFile = new ImageStorageController(mContext).
+                setFileName(event.getPhotoUri()).
+                setDirectoryName(Constant.DIRECTORY_NAME).
+                getImageAsFile();
+
+        Picasso.get()
+                .load(imageFile)
+                .fit()
+                .centerCrop()
+                .into(holder.eventImage);
+
         holder.eventName.setText(event.getName());
         holder.eventDaysRemaining.setText("12");
         holder.eventHoursRemaining.setText("22");

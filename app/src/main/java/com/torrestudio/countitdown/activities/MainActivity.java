@@ -19,13 +19,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.torrestudio.countitdown.R;
-import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.EventDataController;
+import com.torrestudio.countitdown.entities.Category;
 import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.entities.EventAdapter;
 import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EventDataSubscriber {
@@ -49,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements
         mDataController = EventDataController.initController(this);
         EventDataController.subscribe(this);
         initViews();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setToolbarTitle(getString(R.string.category_all_events));
+        mDataController.filterEventsByCategory(Category.ALL_EVENTS);
+        mAdapter.notifyDataSetChanged();
     }
 
     private void initViews() {
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setUpRecyclerView() {
         mRecyclerView = findViewById(R.id.events_recyclerView);
-        mAdapter = new EventAdapter(mDataController.getAllEvents());
+        mAdapter = new EventAdapter(this, mDataController.getEvents());
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -116,30 +122,41 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout.closeDrawers();
 
         String newToolbarName = "";
+        Category categoryToFilterBy = null;
+
         switch (item.getItemId()) {
             case R.id.nav_all_events:
                 newToolbarName = getString(R.string.category_all_events);
+                categoryToFilterBy = Category.ALL_EVENTS;
                 break;
             case R.id.nav_past_events:
                 newToolbarName = getString(R.string.category_past_events);
+                categoryToFilterBy = Category.PAST_EVENTS;
                 break;
             case R.id.nav_business:
                 newToolbarName = getString(R.string.category_business);
+                categoryToFilterBy = Category.BUSINESS;
                 break;
             case R.id.nav_education:
                 newToolbarName = getString(R.string.category_education);
+                categoryToFilterBy = Category.EDUCATION;
                 break;
             case R.id.nav_leisure:
                 newToolbarName = getString(R.string.category_leisure);
+                categoryToFilterBy = Category.LEISURE;
                 break;
             case R.id.nav_special:
                 newToolbarName = getString(R.string.category_special);
+                categoryToFilterBy = Category.SPECIAL;
                 break;
             case R.id.nav_sports:
                 newToolbarName = getString(R.string.category_sports);
+                categoryToFilterBy = Category.SPORTS;
                 break;
         }
         setToolbarTitle(newToolbarName);
+        mDataController.filterEventsByCategory(categoryToFilterBy);
+        mAdapter.notifyDataSetChanged();
         return true;
     }
 
@@ -154,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.action_settings:
-                Toast.makeText(this, "No of events: " + mDataController.getAllEvents().size(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No of events: " + mDataController.getEvents().size(), Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

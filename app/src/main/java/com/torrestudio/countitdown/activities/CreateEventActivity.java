@@ -156,7 +156,11 @@ public class CreateEventActivity extends AppCompatActivity
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             mEventPhotoUri = data.getData();
             mEventPhotoBitmap = getBitmapFromUri(mEventPhotoUri);
-            Picasso.get().load(mEventPhotoUri).into(mEventImage);
+            Picasso.get()
+                    .load(mEventPhotoUri)
+                    .fit()
+                    .centerCrop()
+                    .into(mEventImage);
             isEventImageSet = true;
         }
     }
@@ -220,7 +224,7 @@ public class CreateEventActivity extends AppCompatActivity
     }
 
     private Event getEventInstance() {
-        Event event = new Event(mEventPhotoUri.toString() + Constant.IMG_FILE_EXTENSION,
+        Event event = new Event("event" + System.currentTimeMillis() + Constant.IMG_FILE_EXTENSION,
                 mEventName, mEventDateTimeInMillis, mEventCategory);
         event.setPhotoBitmap(mEventPhotoBitmap);
         return event;

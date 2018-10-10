@@ -42,7 +42,7 @@ public class ImageStorageController {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(createFile());
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 40, fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -110,5 +110,9 @@ public class ImageStorageController {
             }
         }
         return null;
+    }
+
+    public File getImageAsFile() {
+        return createFile();
     }
 }
