@@ -1,73 +1,89 @@
 package com.torrestudio.countitdown.entities;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class Event implements Serializable {
+public class Event implements Serializable, Comparable<Event> {
     private static final long serialVersionUID = 1L;
 
-    private Bitmap photoBitmap;
-    private String photoUri;
-    private String name;
-    private long dateTimeInMillis;
-    private String category;
+    private Bitmap mPhotoBitmap;
+    private String mPhotoUri;
+    private String mName;
+    private long mDateTimeInMillis;
+    private String mCategory;
+    private DateDifference mDateDifference;
 
     public Event(String photoUri, String name, long dateTimeInMillis, String category) {
-        this.photoUri = photoUri;
-        this.name = name;
-        this.dateTimeInMillis = dateTimeInMillis;
-        this.category = category;
+        this.mPhotoUri = photoUri;
+        this.mName = name;
+        this.mDateTimeInMillis = dateTimeInMillis;
+        this.mCategory = category;
+        mDateDifference = new DateDifference(mDateTimeInMillis);
     }
 
     public Bitmap getPhotoBitmap() {
-        return photoBitmap;
+        return mPhotoBitmap;
     }
 
     public void setPhotoBitmap(Bitmap photoBitmap) {
-        this.photoBitmap = photoBitmap;
+        this.mPhotoBitmap = photoBitmap;
     }
 
     public String getPhotoUri() {
-        return photoUri;
+        return mPhotoUri;
     }
 
     public void setPhotoUri(String photoUri) {
-        this.photoUri = photoUri;
+        this.mPhotoUri = photoUri;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.mName = name;
     }
 
     public long getDateTimeInMillis() {
-        return dateTimeInMillis;
+        return mDateTimeInMillis;
     }
 
     public void setDateTimeInMillis(long dateTimeInMillis) {
-        this.dateTimeInMillis = dateTimeInMillis;
+        this.mDateTimeInMillis = dateTimeInMillis;
     }
 
     public String getCategory() {
-        return category;
+        return mCategory;
     }
 
     public void setCategory(String category) {
-        this.category = category;
+        this.mCategory = category;
+    }
+
+    public DateDifference getDateDifference() {
+        return mDateDifference;
+    }
+
+    public boolean isPastEvent() {
+        return System.currentTimeMillis() > mDateTimeInMillis;
+    }
+
+    @Override
+    public int compareTo(@NonNull Event compareEvent) {
+        return Long.compare(mDateTimeInMillis, compareEvent.mDateTimeInMillis);
     }
 
     @Override
     public String toString() {
         return "Event{" +
-                "photoBitmap=" + photoBitmap +
-                ", photoUri='" + photoUri + '\'' +
-                ", name='" + name + '\'' +
-                ", dateTimeInMillis=" + dateTimeInMillis +
-                ", category='" + category + '\'' +
+                "mPhotoBitmap=" + mPhotoBitmap +
+                ", mPhotoUri='" + mPhotoUri + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mDateTimeInMillis=" + mDateTimeInMillis +
+                ", mCategory='" + mCategory + '\'' +
                 '}';
     }
 }

@@ -12,19 +12,22 @@ import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class EventDataController {
 
-    private Context mContext;
-    private EventDbController mDbController;
-
     // List of events in the database. All instances will share all the events.
-    private static ArrayList<Event> sAllEvents = new ArrayList<>();
-    private static ArrayList<Event> sFilteredEvents = new ArrayList<>();
+    private static List<Event> sAllEvents = new ArrayList<>();
     // Subscribers to be notified when new data is added.
-    private static ArrayList<EventDataSubscriber> sSubscribers = new ArrayList<>();
+    private static List<EventDataSubscriber> sSubscribers = new ArrayList<>();
     private static boolean isEventDataLoaded = false;
     private static boolean sSubscribersNotified = false;
+
+    private Context mContext;
+    private EventDbController mDbController;
+    private List<Event> mFilteredEvents = new ArrayList<>();
 
     public static EventDataController initController(Context context) {
         return new EventDataController(context);
@@ -33,8 +36,11 @@ public class EventDataController {
     private EventDataController(Context context) {
         mContext = context;
         mDbController = new EventDbController(mContext);
+
         if (!isEventDataLoaded)
             loadEventsAndNotifySubscribers();
+        else
+            resetFilteredEvents();
     }
 
     private void loadEventsAndNotifySubscribers() {
@@ -55,7 +61,8 @@ public class EventDataController {
             event.setPhotoBitmap(getEventBitmapFromDevice(event));
             sAllEvents.add(event);
         }
-        sFilteredEvents.addAll(sAllEvents);
+        Collections.sort(sAllEvents);
+        resetFilteredEvents();
         isEventDataLoaded = true;
     }
 
@@ -70,7 +77,7 @@ public class EventDataController {
     public void createEvent(Event e) {
         mDbController.insertEventRecord(e);
         storeEventImageOnDevice(e);
-        sAllEvents.add(e);
+        insertSortedEventToList(e);
         resetFilteredEvents();
 
         for (EventDataSubscriber sub : sSubscribers)
@@ -91,6 +98,19 @@ public class EventDataController {
                 load();
     }
 
+    private void insertSortedEventToList(Event e) {
+        sAllEvents.add(e);
+        Collections.sort(sAllEvents);
+
+        // Crashes the app. Using a less efficient approach for now :-(
+        /*
+            for (int i = 0; i < sAllEvents.size(); i++) {
+                if (Long.compare(e.getDateTimeInMillis(), sAllEvents.get(i).getDateTimeInMillis()) < 0)
+                    sAllEvents.add(i, e);
+            }
+        */
+    }
+
     public void filterEventsByCategory(Category criteria) {
         switch (criteria) {
             case ALL_EVENTS:
@@ -105,25 +125,33 @@ public class EventDataController {
     }
 
     private void resetFilteredEvents() {
-        sFilteredEvents.clear();
-        sFilteredEvents.addAll(sAllEvents);
+        mFilteredEvents.clear();
+
+        for (Event event : sAllEvents)
+            if (!event.isPastEvent())
+                mFilteredEvents.add(event);
     }
 
-    // TODO: 10/5/2018
     private void filterPastEvents() {
+        mFilteredEvents.clear();
 
+        for (Event event : sAllEvents)
+            if (event.isPastEvent())
+                mFilteredEvents.add(event);
+
+        Collections.reverse(mFilteredEvents);
     }
 
     private void filterByCategory(Category criteria) {
-        sFilteredEvents.clear();
+        mFilteredEvents.clear();
         for (Event e : sAllEvents) {
-            if (e.getCategory().equalsIgnoreCase(mContext.getString(criteria.getResourceId())))
-                sFilteredEvents.add(e);
+            if (e.getCategory().equalsIgnoreCase(mContext.getString(criteria.getResourceId())) && !e.isPastEvent())
+                mFilteredEvents.add(e);
         }
     }
 
-    public ArrayList<Event> getEvents() {
-        return sFilteredEvents;
+    public List<Event> getEvents() {
+        return mFilteredEvents;
     }
 
     /**

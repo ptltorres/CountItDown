@@ -177,6 +177,7 @@ public class CreateEventActivity extends AppCompatActivity
     @Override
     public void onDateSelected(DatePicker view, int year, int month, int dayOfMonth) {
         mEventDateTimeCalendar.set(year, month, dayOfMonth);
+        Toast.makeText(this, "Month selected: " + month, Toast.LENGTH_LONG).show();
 
         SimpleDateFormat formatter = new SimpleDateFormat(
                 Locale.getDefault().equals(Locale.US) ? US_DATE_FORMAT : NOT_US_DATE_FORMAT);

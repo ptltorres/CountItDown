@@ -17,12 +17,13 @@ import com.torrestudio.countitdown.controllers.ImageStorageController;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private static final String TAG = "EventAdapter";
 
     private Context mContext;
-    private ArrayList<Event> mAllEvents;
+    private List<Event> mAllEvents;
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         public ImageView eventImage;
@@ -39,7 +40,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
-    public EventAdapter(Context context, ArrayList<Event> events) {
+    public EventAdapter(Context context, List<Event> events) {
         mContext = context;
         mAllEvents = events;
     }
@@ -67,8 +68,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 .into(holder.eventImage);
 
         holder.eventName.setText(event.getName());
-        holder.eventDaysRemaining.setText("12");
-        holder.eventHoursRemaining.setText("22");
+        holder.eventDaysRemaining.setText(Long.toString(event.getDateDifference().getElapsedDays()));
+        holder.eventHoursRemaining.setText(Long.toString(event.getDateDifference().getElapsedHours()));
     }
 
     @Override
