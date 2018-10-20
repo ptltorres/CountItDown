@@ -14,6 +14,7 @@
     <!-- Event Cardview Text -->
     <string name="event_days_remaining_text">días y</string>
     <string name="event_hours_remaining_text">horas restantes</string>
+    <string name="event_hours_ago_text">horas atrás</string>
 
     <array name="categories">
         <item>@string/category_business</item>

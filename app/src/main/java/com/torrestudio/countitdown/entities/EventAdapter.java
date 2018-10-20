@@ -30,6 +30,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView eventName;
         public TextView eventDaysRemaining;
         public TextView eventHoursRemaining;
+        public TextView eventHoursRemainingText;
 
         public EventViewHolder(View view) {
             super(view);
@@ -37,6 +38,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventName = view.findViewById(R.id.event_name_textView);
             eventDaysRemaining = view.findViewById(R.id.event_days_reaminaing_text);
             eventHoursRemaining = view.findViewById(R.id.event_hours_remaining_text);
+            eventHoursRemainingText = view.findViewById(R.id.hours_remaining_text);
+
         }
     }
 
@@ -56,20 +59,27 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = mAllEvents.get(position);
 
-        File imageFile = new ImageStorageController(mContext)
-                .setFileName(event.getPhotoUri())
-                .setDirectoryName(Constant.DIRECTORY_NAME)
-                .getImageAsFile();
-
         Picasso.get()
-                .load(imageFile)
+                .load(getEventImageAsFile(event))
                 .fit()
                 .centerCrop()
                 .into(holder.eventImage);
 
         holder.eventName.setText(event.getName());
-        holder.eventDaysRemaining.setText(Long.toString(event.getDateDifference().getElapsedDays()));
-        holder.eventHoursRemaining.setText(Long.toString(event.getDateDifference().getElapsedHours()));
+        holder.eventDaysRemaining.setText(Long.toString(Math.abs(event.getDateDifference().getElapsedDays())));
+        holder.eventHoursRemaining.setText(Long.toString(Math.abs(event.getDateDifference().getElapsedHours())));
+
+        if (event.isPastEvent())
+            holder.eventHoursRemainingText.setText(R.string.event_hours_ago_text);
+        else
+            holder.eventHoursRemainingText.setText(R.string.event_hours_remaining_text);
+    }
+
+    private File getEventImageAsFile(Event event) {
+        return new ImageStorageController(mContext)
+                .setFileName(event.getPhotoUri())
+                .setDirectoryName(Constant.DIRECTORY_NAME)
+                .getImageAsFile();
     }
 
     @Override

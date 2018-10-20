@@ -1,3 +1,9 @@
+/**
+ *
+ *  Author: P. Torres
+ *  Last Modified: 10/20/18
+ */
+
 package com.torrestudio.countitdown.controllers;
 
 import android.content.Context;
@@ -144,8 +150,9 @@ public class EventDataController {
 
     private void filterByCategory(Category criteria) {
         mFilteredEvents.clear();
+
         for (Event e : sAllEvents) {
-            if (e.getCategory().equalsIgnoreCase(mContext.getString(criteria.getResourceId())) && !e.isPastEvent())
+            if (e.getCategory().equals(criteria.name()) && !e.isPastEvent())
                 mFilteredEvents.add(e);
         }
     }

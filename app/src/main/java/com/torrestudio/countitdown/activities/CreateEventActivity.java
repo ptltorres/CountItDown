@@ -1,3 +1,9 @@
+/**
+ *
+ *  Author: P. Torres
+ *  Last Modified: 10/20/18
+ */
+
 package com.torrestudio.countitdown.activities;
 
 import android.content.Intent;
@@ -16,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,6 +36,7 @@ import com.torrestudio.countitdown.R;
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.EventDataController;
 import com.torrestudio.countitdown.controllers.ImageStorageController;
+import com.torrestudio.countitdown.entities.Category;
 import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.fragments.DatePickerFragment;
 import com.torrestudio.countitdown.fragments.TimePickerFragment;
@@ -41,7 +49,7 @@ import java.util.Locale;
 
 public class CreateEventActivity extends AppCompatActivity
         implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener,
-                    TimePickerFragment.OnTimeSelectedListener, EventDataSubscriber {
+                    TimePickerFragment.OnTimeSelectedListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "CreateEventActivity";
 
@@ -71,6 +79,7 @@ public class CreateEventActivity extends AppCompatActivity
     private static final String US_DATE_FORMAT = "MM/dd/YYYY";
     private static final String NOT_US_DATE_FORMAT = "dd/MM/YYYY";
 
+    // Request code for image chooser
     static final int REQUEST_IMAGE_GET = 1;
 
     @Override
@@ -106,6 +115,7 @@ public class CreateEventActivity extends AppCompatActivity
                 R.array.categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(adapter);
+        mCategorySpinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -142,6 +152,17 @@ public class CreateEventActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mEventCategory = Category.values()[position].name();
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     private void openImageChooser() {
         Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
         imageIntent.setType("image/*");
@@ -173,6 +194,7 @@ public class CreateEventActivity extends AppCompatActivity
             return null;
         }
     }
+
 
     @Override
     public void onDateSelected(DatePicker view, int year, int month, int dayOfMonth) {
@@ -221,7 +243,6 @@ public class CreateEventActivity extends AppCompatActivity
     private void setInputViewsValues() {
         mEventName = mEventNameEditText.getText().toString();
         mEventDateTimeInMillis = mEventDateTimeCalendar.getTimeInMillis();
-        mEventCategory = mCategorySpinner.getSelectedItem().toString();
     }
 
     private Event getEventInstance() {
@@ -231,14 +252,4 @@ public class CreateEventActivity extends AppCompatActivity
         return event;
     }
 
-
-    @Override
-    public void onEventCreated(Event e) {
-        // No implementation as for now. This class is not subscribed to an EventDataController
-    }
-
-    @Override
-    public void onEventDataLoaded() {
-
-    }
 }

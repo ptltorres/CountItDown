@@ -2,7 +2,8 @@
  * This is the app's database. This class is supposed to only be used by
  * {@link com.torrestudio.countitdown.database.EventDbController}
  *
- * Created by P. Torres on 09/05/18
+ * Author: P. Torres
+ * Last Updated: 09/05/18
  */
 
 package com.torrestudio.countitdown.database;

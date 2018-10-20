@@ -1,5 +1,9 @@
 /**
- * This class is in charge of performing operations on the app's databae
+ * This class is in charge of performing operations (create, retrieve, delete events)
+ * on the app's database.
+ *
+ * Author: P. Torres
+ * Last Updated: 09/07/18
  */
 
 package com.torrestudio.countitdown.database;
