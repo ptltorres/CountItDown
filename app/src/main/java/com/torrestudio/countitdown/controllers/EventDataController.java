@@ -9,6 +9,7 @@ package com.torrestudio.countitdown.controllers;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.widget.Toast;
 
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.database.EventContract;
@@ -20,20 +21,25 @@ import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class EventDataController {
 
-    // List of events in the database. All instances will share all the events.
+    //Instance fields
+    private Context mContext;
+    private EventDbController mDbController;
+    private List<Event> mFilteredEvents;
+
+    // Class fields
     private static List<Event> sAllEvents = new ArrayList<>();
-    // Subscribers to be notified when new data is added.
     private static List<EventDataSubscriber> sSubscribers = new ArrayList<>();
     private static boolean isEventDataLoaded = false;
     private static boolean sSubscribersNotified = false;
 
-    private Context mContext;
-    private EventDbController mDbController;
-    private List<Event> mFilteredEvents = new ArrayList<>();
+    // Constants
+    public static final int SORT_BY_DATE = 0;
+    public static final int SORT_BY_NAME = 1;
 
     public static EventDataController initController(Context context) {
         return new EventDataController(context);
@@ -41,6 +47,7 @@ public class EventDataController {
 
     private EventDataController(Context context) {
         mContext = context;
+        mFilteredEvents = new ArrayList<>();
         mDbController = new EventDbController(mContext);
 
         if (!isEventDataLoaded)
@@ -155,6 +162,27 @@ public class EventDataController {
             if (e.getCategory().equals(criteria.name()) && !e.isPastEvent())
                 mFilteredEvents.add(e);
         }
+    }
+
+    public void sortEvents(int sortOption) {
+        switch (sortOption) {
+            case SORT_BY_DATE:
+                sortByDate();
+                break;
+            case SORT_BY_NAME:
+                sortByName();
+                break;
+        }
+    }
+
+    private void sortByDate() {
+        Collections.sort(mFilteredEvents);
+    }
+
+    private void sortByName() {
+        Collections.sort(mFilteredEvents, (e1, e2) -> {
+            return e1.getName().toLowerCase().compareTo(e2.getName().toLowerCase());
+        });
     }
 
     public List<Event> getEvents() {

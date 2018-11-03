@@ -11,11 +11,6 @@
     <string name="category_special">Especial</string>
     <string name="category_sports">Deportes</string>
 
-    <!-- Event Cardview Text -->
-    <string name="event_days_remaining_text">días y</string>
-    <string name="event_hours_remaining_text">horas restantes</string>
-    <string name="event_hours_ago_text">horas atrás</string>
-
     <array name="categories">
         <item>@string/category_business</item>
         <item>@string/category_education</item>
@@ -24,13 +19,31 @@
         <item>@string/category_sports</item>
     </array>
 
+    <!-- Event Cardview Text -->
+    <string name="event_days_remaining_text">días y</string>
+    <string name="event_hours_remaining_text">horas restantes</string>
+    <string name="event_hours_ago_text">horas atrás</string>
+
+
     <!-- Action menu -->
     <string name="action_search">Buscar</string>
+    <string name="search_hint">Buscar por nombre</string>
     <string name="action_settings">Ajustes</string>
+    <string name="action_sort_by">Ordenar por</string>
+    <string name="sort_by_name">Nombre</string>
+    <string name="sort_by_date">Fecha</string>
+
+    <array name="sort_by_options">
+        <item>@string/sort_by_date</item>
+        <item>@string/sort_by_name</item>
+    </array>
 
     <!-- New Event Activity -->
     <string name="hint_event_name">Nombre del Evento</string>
     <string name="hint_event_date">Fecha del Evento</string>
     <string name="hint_event_time">Hora del Evento</string>
+
+    <!-- User messages -->
+    <string name="blank_fields">Seleccione una imagen y llene todos los campos</string>
 
 </resources>

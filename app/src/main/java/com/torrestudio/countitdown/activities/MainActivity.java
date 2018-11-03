@@ -1,5 +1,13 @@
+/**
+ *
+ *  Author: P. Torres
+ *  Last Modified: 10/30/18
+ */
+
 package com.torrestudio.countitdown.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,16 +32,19 @@ import com.torrestudio.countitdown.controllers.EventDataController;
 import com.torrestudio.countitdown.entities.Category;
 import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.entities.EventAdapter;
+import com.torrestudio.countitdown.fragments.SortByDialogFragment;
 import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EventDataSubscriber {
+        NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EventDataSubscriber,
+        SortByDialogFragment.OnSortOptionSelected {
 
     // Member views of this activity
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private SearchView mSearchView;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private EventAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton addFabButton;
 
@@ -51,16 +63,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onRestart() {
         super.onRestart();
-        setToolbarTitle(getString(R.string.category_all_events));
-        mDataController.filterEventsByCategory(Category.ALL_EVENTS);
-        mAdapter.notifyDataSetChanged();
+        restartUI();
     }
 
     private void initViews() {
         setUpNavDrawer();
         setUpToolbar();
         setUpFab();
+        setUpRecyclerView();
     }
+
 
     private void setUpNavDrawer() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -84,10 +96,18 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setUpRecyclerView() {
         mRecyclerView = findViewById(R.id.events_recyclerView);
-        mAdapter = new EventAdapter(this, mDataController.getEvents());
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void restartUI() {
+        setToolbarTitle(getString(R.string.category_all_events));
+        mDataController.filterEventsByCategory(Category.ALL_EVENTS);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void setToolbarTitle(String newName) {
+        getSupportActionBar().setTitle(newName);
     }
 
     @Override
@@ -106,15 +126,67 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onSortOptionSelected(int sortOption) {
+        mDataController.sortEvents(sortOption);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onEventDataLoaded() {
-        runOnUiThread(() -> setUpRecyclerView());
+        runOnUiThread(() -> updateUI());
+    }
+
+    private void updateUI() {
+        mAdapter = new EventAdapter(this, mDataController.getEvents());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_menu, menu);
+        setUpSearchView(menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.action_sort_by:
+                SortByDialogFragment sortByDialogFragment = new SortByDialogFragment();
+                sortByDialogFragment.show(getSupportFragmentManager(), "sortByDialog");
+                break;
+            case R.id.action_settings:
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setUpSearchView(Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                mAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // filter recycler view when text is changed
+                mAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -163,20 +235,5 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void setToolbarTitle(String newName) {
-        getSupportActionBar().setTitle(newName);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.action_settings:
-                Toast.makeText(this, "No of events: " + mDataController.getEvents().size(), Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

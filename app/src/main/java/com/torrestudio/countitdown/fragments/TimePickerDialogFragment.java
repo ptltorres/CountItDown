@@ -11,7 +11,7 @@ import android.widget.TimePicker;
 import android.text.format.DateFormat;
 import java.util.Calendar;
 
-public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     // Callback interface to notify other classes when the user selects a time
     public interface OnTimeSelectedListener {

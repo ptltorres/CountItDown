@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import java.util.Calendar;
 
-public class DatePickerFragment extends DialogFragment
+public class DatePickerDialogFragment extends DialogFragment
                                 implements DatePickerDialog.OnDateSetListener {
 
     // Callback interface to notify other classes when the user selects a date

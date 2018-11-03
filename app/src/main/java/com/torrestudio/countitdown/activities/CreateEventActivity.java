@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,12 +34,10 @@ import com.squareup.picasso.Picasso;
 import com.torrestudio.countitdown.R;
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.EventDataController;
-import com.torrestudio.countitdown.controllers.ImageStorageController;
 import com.torrestudio.countitdown.entities.Category;
 import com.torrestudio.countitdown.entities.Event;
-import com.torrestudio.countitdown.fragments.DatePickerFragment;
-import com.torrestudio.countitdown.fragments.TimePickerFragment;
-import com.torrestudio.countitdown.interfaces.EventDataSubscriber;
+import com.torrestudio.countitdown.fragments.DatePickerDialogFragment;
+import com.torrestudio.countitdown.fragments.TimePickerDialogFragment;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -48,8 +45,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class CreateEventActivity extends AppCompatActivity
-        implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener,
-                    TimePickerFragment.OnTimeSelectedListener, AdapterView.OnItemSelectedListener {
+        implements View.OnClickListener, DatePickerDialogFragment.OnDateSelectedListener,
+                    TimePickerDialogFragment.OnTimeSelectedListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "CreateEventActivity";
 
@@ -142,11 +139,11 @@ public class CreateEventActivity extends AppCompatActivity
                 openImageChooser();
                 break;
             case R.id.add_event_date_edittext:
-                DialogFragment dateDialogFragment = new DatePickerFragment();
+                DialogFragment dateDialogFragment = new DatePickerDialogFragment();
                 dateDialogFragment.show(getSupportFragmentManager(), "datePicker");
                 break;
             case R.id.add_event_time_edittext:
-                DialogFragment timeDialogFragment = new TimePickerFragment();
+                DialogFragment timeDialogFragment = new TimePickerDialogFragment();
                 timeDialogFragment.show(getSupportFragmentManager(), "timePicker");
                 break;
         }
@@ -227,7 +224,7 @@ public class CreateEventActivity extends AppCompatActivity
             eventController.createEvent(newEvent);
             finish();
         } else {
-            Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.blank_fields, Toast.LENGTH_LONG).show();
         }
     }
 
