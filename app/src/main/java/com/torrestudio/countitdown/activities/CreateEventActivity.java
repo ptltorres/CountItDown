@@ -38,11 +38,10 @@ import com.torrestudio.countitdown.entities.Category;
 import com.torrestudio.countitdown.entities.Event;
 import com.torrestudio.countitdown.fragments.DatePickerDialogFragment;
 import com.torrestudio.countitdown.fragments.TimePickerDialogFragment;
+import com.torrestudio.countitdown.helpers.DateFormatHelper;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class CreateEventActivity extends AppCompatActivity
         implements View.OnClickListener, DatePickerDialogFragment.OnDateSelectedListener,
@@ -71,10 +70,6 @@ public class CreateEventActivity extends AppCompatActivity
     private long mEventDateTimeInMillis;
     private String mEventCategory;
     private Calendar mEventDateTimeCalendar = Calendar.getInstance();
-
-    // DateFormat
-    private static final String US_DATE_FORMAT = "MM/dd/YYYY";
-    private static final String NOT_US_DATE_FORMAT = "dd/MM/YYYY";
 
     // Request code for image chooser
     static final int REQUEST_IMAGE_GET = 1;
@@ -116,21 +111,22 @@ public class CreateEventActivity extends AppCompatActivity
     }
 
     @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mEventCategory = Category.values()[position].name();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.create_event_menu, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_done:
-                createEventRecord();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onClick(View v) {
@@ -147,17 +143,6 @@ public class CreateEventActivity extends AppCompatActivity
                 timeDialogFragment.show(getSupportFragmentManager(), "timePicker");
                 break;
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        mEventCategory = Category.values()[position].name();
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     private void openImageChooser() {
@@ -196,11 +181,7 @@ public class CreateEventActivity extends AppCompatActivity
     @Override
     public void onDateSelected(DatePicker view, int year, int month, int dayOfMonth) {
         mEventDateTimeCalendar.set(year, month, dayOfMonth);
-        Toast.makeText(this, "Month selected: " + month, Toast.LENGTH_LONG).show();
-
-        SimpleDateFormat formatter = new SimpleDateFormat(
-                Locale.getDefault().equals(Locale.US) ? US_DATE_FORMAT : NOT_US_DATE_FORMAT);
-        mEventDateEditText.setText(formatter.format(mEventDateTimeCalendar.getTime()));
+        mEventDateEditText.setText(DateFormatHelper.formatDate(mEventDateTimeCalendar));
         isEventDateSet = true;
     }
 
@@ -208,17 +189,22 @@ public class CreateEventActivity extends AppCompatActivity
     public void onTimeSelected(TimePicker view, int hourOfDay, int minute) {
         mEventDateTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mEventDateTimeCalendar.set(Calendar.MINUTE, minute);
-
-        mEventTimeEditText.setText(formatSelectedTime().format(mEventDateTimeCalendar.getTime()));
+        mEventTimeEditText.setText(DateFormatHelper.formatTime(mEventDateTimeCalendar));
         isEventTimeSet = true;
     }
 
-    private SimpleDateFormat formatSelectedTime() {
-        return new SimpleDateFormat("hh:mm a");
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                createEventRecord();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void createEventRecord() {
-        if (validateInputFields()) {
+        if (validateInputViews()) {
             EventDataController eventController = EventDataController.initController(this);
             Event newEvent = getEventInstance();
             eventController.createEvent(newEvent);
@@ -228,7 +214,7 @@ public class CreateEventActivity extends AppCompatActivity
         }
     }
 
-    private boolean validateInputFields() {
+    private boolean validateInputViews() {
         setInputViewsValues();
 
         boolean isValid = !mEventName.isEmpty() && isEventImageSet

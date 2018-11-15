@@ -1,5 +1,5 @@
 /**
- * This enumerate type represents the categories for an event. They're defined in the order they
+ * This enumerated type represents the categories for an event. They're defined in the order they
  * appear in the navigation drawer and the spinner in the creation activity. They're arranged
  * alphabetically (english).
  *
@@ -22,7 +22,6 @@ public enum Category {
     PAST_EVENTS (R.string.category_past_events);
 
     private int resourceId;
-    private int cId;
 
     Category(int resourceId) {
         this.resourceId = resourceId;
