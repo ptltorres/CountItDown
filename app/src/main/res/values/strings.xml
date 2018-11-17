@@ -48,4 +48,8 @@
 
     <!-- User messages -->
     <string name="blank_fields">Select an image and fill all the fields</string>
+
+    <!-- Event detail titles -->
+    <string name="event_date_title">Date</string>
+    <string name="event_time_title">Time</string>
 </resources>

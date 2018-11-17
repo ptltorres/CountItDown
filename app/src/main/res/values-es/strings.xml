@@ -50,4 +50,8 @@
     <!-- User messages -->
     <string name="blank_fields">Seleccione una imagen y llene todos los campos</string>
 
+    <!-- Event detail titles -->
+    <string name="event_date_title">Fecha</string>
+    <string name="event_time_title">Hora</string>
+
 </resources>
