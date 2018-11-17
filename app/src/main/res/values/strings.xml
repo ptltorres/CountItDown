@@ -24,6 +24,9 @@
     <string name="event_hours_remaining_text">hours away</string>
     <string name="event_hours_ago_text">hours ago</string>
 
+    <string name="event_days_text">Days</string>
+    <string name="event_hours_text">Hours</string>
+    <string name="event_minutes_text">Minutes</string>
 
     <!-- Action menu -->
     <string name="action_search">Search</string>

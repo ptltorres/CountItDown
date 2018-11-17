@@ -7,6 +7,7 @@
 package com.torrestudio.countitdown.entities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,11 +20,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.torrestudio.countitdown.R;
+import com.torrestudio.countitdown.activities.EventDetailActivity;
 import com.torrestudio.countitdown.constants.Constant;
 import com.torrestudio.countitdown.controllers.ImageStorageController;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private List<Event> mAllEvents;
     private List<Event> mFilteredEvents;
 
-    class EventViewHolder extends RecyclerView.ViewHolder {
+    class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Event mEvent;
         private ImageView eventImage;
         private TextView eventName;
         private TextView eventDaysRemaining;
@@ -46,13 +48,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             super(view);
             eventImage = view.findViewById(R.id.event_image);
             eventName = view.findViewById(R.id.event_name_textView);
-            eventDaysRemaining = view.findViewById(R.id.event_days_reaminaing_text);
+            eventDaysRemaining = view.findViewById(R.id.event_days_remaining_text);
             eventHoursRemaining = view.findViewById(R.id.event_hours_remaining_text);
             eventHoursRemainingText = view.findViewById(R.id.hours_remaining_text);
+            itemView.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            Intent intent = EventDetailActivity.newIntent(mContext, mEvent);
+            mContext.startActivity(intent);
         }
 
         public void bind(Event event) {
+            mEvent = event;
             Picasso.get()
                     .load(getEventImageAsFile(event))
                     .fit()

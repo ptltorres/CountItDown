@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Event implements Serializable, Comparable<Event> {
     private static final long serialVersionUID = 1L;
 
-    private Bitmap mPhotoBitmap;
+    private transient Bitmap mPhotoBitmap;
     private String mPhotoUri;
     private String mName;
     private long mDateTimeInMillis;

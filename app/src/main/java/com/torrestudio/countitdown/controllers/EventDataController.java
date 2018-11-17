@@ -141,8 +141,10 @@ public class EventDataController {
         mFilteredEvents.clear();
 
         for (Event event : sAllEvents)
-            if (!event.isPastEvent())
+            if (!event.isPastEvent()) {
+                event.getDateDifference().update();
                 mFilteredEvents.add(event);
+            }
     }
 
     private void filterPastEvents() {

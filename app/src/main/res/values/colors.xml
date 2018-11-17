@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#FAFAFA</color>
     <color name="colorPrimaryDark">#9E9E9E</color>
-    <color name="colorAccent">#424242</color>
-    <color name="cardViewBackground">#E0E0E0</color>
+    <color name="colorAccent">#212121</color>
+    <color name="cardViewBackground">#FFFFFF</color>
 </resources>

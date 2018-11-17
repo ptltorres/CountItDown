@@ -20,9 +20,13 @@
     </array>
 
     <!-- Event Cardview Text -->
-    <string name="event_days_remaining_text">días y</string>
+    <string name="event_days_remaining_text">dias y</string>
     <string name="event_hours_remaining_text">horas restantes</string>
     <string name="event_hours_ago_text">horas atrás</string>
+
+    <string name="event_days_text">Dias</string>
+    <string name="event_hours_text">Horas</string>
+    <string name="event_minutes_text">Minutos</string>
 
 
     <!-- Action menu -->
