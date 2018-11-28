@@ -68,7 +68,7 @@ public class EventDbController  {
     }
 
     public int deleteEventRecord(Event event) {
-        String selection = EventContract.Event.COLUMN_NAME + " LIKE ? AND" +
+        String selection = EventContract.Event.COLUMN_NAME + " LIKE ? AND " +
                 EventContract.Event.COLUMN_CATEGORY + " LIKE ?";
 
         String[] selectionArgs = {event.getName(), event.getCategory()};

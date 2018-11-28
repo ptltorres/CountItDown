@@ -77,6 +77,14 @@ public class Event implements Serializable, Comparable<Event> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Event) {
+            return this.mName.equals(((Event) obj).getName()) && this.mDateTimeInMillis == ((Event) obj).getDateTimeInMillis();
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "Event{" +
                 "mPhotoBitmap=" + mPhotoBitmap +

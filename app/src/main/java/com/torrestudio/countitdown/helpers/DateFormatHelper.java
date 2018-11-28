@@ -30,7 +30,19 @@ public class DateFormatHelper {
         return sDateFormatter.format(calendar.getTime());
     }
 
+    public static String formatDate(long calendarInMillis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(calendarInMillis);
+        return sDateFormatter.format(calendar.getTime());
+    }
+
     public static String formatTime(Calendar calendar) {
+        return sTimeFormatter.format(calendar.getTime());
+    }
+
+    public static String formatTime(long calendarInMillis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(calendarInMillis);
         return sTimeFormatter.format(calendar.getTime());
     }
 }

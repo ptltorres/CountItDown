@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".activities.CreateEventActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <include
             android:id="@+id/event_detail_toolbar"
@@ -185,6 +187,7 @@
                     android:id="@+id/date_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_date_black_24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -197,7 +200,6 @@
                     android:text="@string/event_date_title"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-
                     app:layout_constraintStart_toEndOf="@+id/date_icon"
                     app:layout_constraintTop_toTopOf="@+id/date_icon" />
 
@@ -205,14 +207,12 @@
                     android:id="@+id/date_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
+                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="4dp"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/date_title"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.531"
-                    app:layout_constraintStart_toEndOf="@+id/date_title"
                     app:layout_constraintTop_toTopOf="@+id/date_title"
                     tools:text="12/01/2018" />
 

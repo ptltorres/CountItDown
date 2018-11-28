@@ -87,6 +87,19 @@ public class EventDataController {
         }
     }
 
+    public void deleteEvent(Event e) {
+        mDbController.deleteEventRecord(e);
+        sAllEvents.remove(e);
+        deleteImageFromDevice(e);
+    }
+
+    private void deleteImageFromDevice(Event e) {
+        new ImageStorageController(mContext).
+                setFileName(e.getPhotoUri()).
+                setDirectoryName(Constant.DIRECTORY_NAME).
+                deleteFile();
+    }
+
     public void createEvent(Event e) {
         mDbController.insertEventRecord(e);
         storeEventImageOnDevice(e);
